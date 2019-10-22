@@ -75,21 +75,51 @@ class DislogClient private constructor(builder: DislogClient.Builder){
     class Builder {
         var urlMap: HashMap<LogLevel, String> = HashMap()
         var name = "dislog"
-          private set
         var avatarUrl = "https://i.imgur.com/SmqNOwu.jpg"
-          private set
         var hostIdentifier: String? = null
-          private set
         var printStackTrace: Boolean = false
-          private set
 
-        fun setUsername(name: String) = apply { this.name = name }
-        fun setAvatarUrl(url: String) = apply { this.avatarUrl = avatarUrl }
-        fun setHostIdentifier(identifier: String) = apply { this.hostIdentifier = identifier }
-        fun setPrintStackTrace(print: Boolean) = apply { this.printStackTrace = print }
-        fun setErrorWebhookUrl(url: String) = apply { this.urlMap[LogLevel.ERROR] = url }
-        fun setWarnWebhookUrl(url: String) = apply { this.urlMap[LogLevel.WARN] = url }
-        fun setInfoWebhookUrl(url: String) = apply { this.urlMap[LogLevel.INFO] = url }
-        fun setDebugWebhookUrl(url: String) = apply { this.urlMap[LogLevel.DEBUG] = url }
+        fun setUsername(name: String) {
+            this.name = name
+        }
+
+        fun setAvatarUrl(url: String) : Builder {
+            this.avatarUrl = avatarUrl
+            return this
+        }
+
+        fun setHostIdentifier(identifier: String) : Builder {
+            this.hostIdentifier = identifier
+            return this
+        }
+
+        fun setPrintStackTrace(print: Boolean) : Builder {
+            this.printStackTrace = print
+            return this
+        }
+
+        fun setErrorWebhookUrl(url: String) : Builder {
+            this.urlMap[LogLevel.ERROR] = url
+            return this
+        }
+
+        fun setWarnWebhookUrl(url: String) : Builder {
+            this.urlMap[LogLevel.WARN] = url
+            return this
+        }
+
+        fun setInfoWebhookUrl(url: String) : Builder {
+            this.urlMap[LogLevel.INFO] = url
+            return this
+        }
+
+        fun setDebugWebhookUrl(url: String) : Builder {
+            this.urlMap[LogLevel.DEBUG] = url
+            return this
+        }
+
+        fun build() : DislogClient {
+            return DislogClient(this)
+        }
     }
 }
