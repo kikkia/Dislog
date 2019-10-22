@@ -84,7 +84,7 @@ class DislogClient private constructor(builder: DislogClient.Builder){
         }
 
         fun setAvatarUrl(url: String) : Builder {
-            this.avatarUrl = avatarUrl
+            this.avatarUrl = url
             return this
         }
 
