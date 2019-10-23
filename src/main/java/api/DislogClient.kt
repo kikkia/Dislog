@@ -89,12 +89,12 @@ class DislogClient private constructor(builder: DislogClient.Builder){
             return this
         }
 
-        fun setHostIdentifier(identifier: String) : Builder {
+        fun setIdentifier(identifier: String) : Builder {
             this.hostIdentifier = identifier
             return this
         }
 
-        fun setPrintStackTrace(print: Boolean) : Builder {
+        fun printStackTrace(print: Boolean) : Builder {
             this.printStackTrace = print
             return this
         }
