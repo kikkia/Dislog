@@ -10,6 +10,8 @@ import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.impl.client.HttpClients
 import org.json.JSONObject
 import org.slf4j.MDC
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -68,7 +70,12 @@ class DislogClient private constructor(builder: DislogClient.Builder){
         if (log.exception != null) {
             body += "\n`${log.exception!!.message}`\n"
             if (printStackTrace) {
-                body += "```${log.exception!!.stackTrace.toString()}```\n"
+                // Hack to get stack trace as a string
+                val sw = StringWriter()
+                log.exception!!.printStackTrace(PrintWriter(sw))
+                val exceptionAsString = sw.toString()
+                
+                body += "```$exceptionAsString```\n"
             }
         }
 
