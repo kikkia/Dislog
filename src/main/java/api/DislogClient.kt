@@ -10,6 +10,9 @@ import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.impl.client.HttpClients
 import org.json.JSONObject
 import org.slf4j.MDC
+import java.time.Instant
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 class DislogClient private constructor(builder: DislogClient.Builder){
 
@@ -18,6 +21,7 @@ class DislogClient private constructor(builder: DislogClient.Builder){
     val avatarUrl: String?
     val hostIdentifier: String?
     var printStackTrace: Boolean = false
+    var timeZoneFormat: ZoneOffset = ZoneOffset.UTC
 
     init {
         this.webhookUrlMap.putAll(builder.urlMap)
@@ -25,6 +29,7 @@ class DislogClient private constructor(builder: DislogClient.Builder){
         this.avatarUrl = builder.avatarUrl
         this.hostIdentifier = builder.hostIdentifier
         this.printStackTrace = builder.printStackTrace
+        this.timeZoneFormat = builder.zoneFormat
     }
 
     fun sendLog(log: Log): Boolean {
@@ -57,7 +62,9 @@ class DislogClient private constructor(builder: DislogClient.Builder){
     }
 
     private fun generateLogBody(log: Log): String {
-        var body = "`" + hostIdentifier + ":` " + log.message
+        val timestamp = getTimestamp()
+
+        var body = "`$timestamp` `" + hostIdentifier + ":` " + log.message
         if (log.exception != null) {
             body += "\n`${log.exception!!.message}`\n"
             if (printStackTrace) {
@@ -68,7 +75,7 @@ class DislogClient private constructor(builder: DislogClient.Builder){
         // If MDC is populated then tack that on
         var mdc = MDC.getCopyOfContextMap()
         if (mdc != null) {
-            body += "MDC:```"
+            body += "\nMDC:```"
             for ((key, value) in MDC.getCopyOfContextMap()) {
                 body += "$key: {\n  $value\n}\n"
             }
@@ -77,12 +84,20 @@ class DislogClient private constructor(builder: DislogClient.Builder){
         return body
     }
 
+    private fun getTimestamp() : String {
+        return DateTimeFormatter
+                .ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")
+                .withZone(timeZoneFormat)
+                .format(Instant.now())
+    }
+
     class Builder {
         val urlMap: HashMap<LogLevel, String> = HashMap()
         var name = "dislog"
         var avatarUrl = "https://i.imgur.com/SmqNOwu.jpg"
         var hostIdentifier: String = "dislog"
         var printStackTrace: Boolean = false
+        var zoneFormat = ZoneOffset.UTC
 
         fun setUsername(name: String) : Builder {
             this.name = name
@@ -121,6 +136,11 @@ class DislogClient private constructor(builder: DislogClient.Builder){
 
         fun setDebugWebhookUrl(url: String) : Builder {
             this.urlMap[LogLevel.DEBUG] = url
+            return this
+        }
+
+        fun setTimeZone(zone: ZoneOffset) : Builder {
+            this.zoneFormat = zone
             return this
         }
 
