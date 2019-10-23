@@ -61,14 +61,19 @@ class DislogClient private constructor(builder: DislogClient.Builder){
         if (log.exception != null) {
             body += "\n`${log.exception!!.message}`\n"
             if (printStackTrace) {
-                body += "```${log.exception!!.stackTrace.toString()}```"
+                body += "```${log.exception!!.stackTrace.toString()}```\n"
             }
         }
-        body += "```\n"
-        for ((key, value) in MDC.getCopyOfContextMap()) {
-            body += "$key: {\n  $value\n}\n"
+
+        // If MDC is populated then tack that on
+        var mdc = MDC.getCopyOfContextMap()
+        if (mdc != null) {
+            body += "MDC:```"
+            for ((key, value) in MDC.getCopyOfContextMap()) {
+                body += "$key: {\n  $value\n}\n"
+            }
+            body += "```"
         }
-        body += "```"
         return body
     }
 
