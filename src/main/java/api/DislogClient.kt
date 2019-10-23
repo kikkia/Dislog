@@ -76,7 +76,7 @@ class DislogClient private constructor(builder: DislogClient.Builder){
         val urlMap: HashMap<LogLevel, String> = HashMap()
         var name = "dislog"
         var avatarUrl = "https://i.imgur.com/SmqNOwu.jpg"
-        var hostIdentifier: String? = null
+        var hostIdentifier: String = "dislog"
         var printStackTrace: Boolean = false
 
         fun setUsername(name: String) : Builder {
