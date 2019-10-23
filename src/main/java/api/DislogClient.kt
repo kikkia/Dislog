@@ -74,7 +74,7 @@ class DislogClient private constructor(builder: DislogClient.Builder){
                 val sw = StringWriter()
                 log.exception!!.printStackTrace(PrintWriter(sw))
                 val exceptionAsString = sw.toString()
-                
+
                 body += "```$exceptionAsString```\n"
             }
         }
@@ -88,7 +88,7 @@ class DislogClient private constructor(builder: DislogClient.Builder){
             }
             body += "```"
         }
-        return body
+        return "$body\n_ _"
     }
 
     private fun getTimestamp() : String {
