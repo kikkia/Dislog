@@ -34,7 +34,20 @@ object FormattingUtils {
             }
             body += "```"
         }
-        return "$body\n_ _"
+
+        var chunkedBody = body.chunked(1950)[0]
+
+        // TODO: Allow for truncation in other messages
+        // TODO: Allow for enable/disable mdc and mdc in another message
+        if (chunkedBody.length >= 1950) {
+            // If odd number of ``` then close it off
+            if ((chunkedBody.count{"```".contains(it)} % 2) == 1) {
+                chunkedBody += "```"
+            }
+            chunkedBody += "\n**Truncated due to length**"
+        }
+
+        return "$chunkedBody\n_ _"
     }
 
     @JvmStatic
