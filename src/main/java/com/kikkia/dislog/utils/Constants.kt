@@ -1,5 +1,8 @@
 package com.kikkia.dislog.utils
 
+/**
+ * Constant default value definitions
+ */
 object Constants {
     @JvmStatic
     val MAX_LOG_RETRIES = 5

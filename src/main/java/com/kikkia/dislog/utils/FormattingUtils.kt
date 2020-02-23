@@ -7,8 +7,14 @@ import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
+/**
+ * Class filled with static helpers to help with log formatting
+ */
 object FormattingUtils {
 
+    /**
+     * Generates a log body for a given log, with options
+     */
     @JvmStatic
     fun generateLogBody(log: Log, printStackTrace: Boolean, hostIdentifier: String, timeZoneFormat: ZoneOffset): String {
         val timestamp = getTimestamp(timeZoneFormat)
@@ -50,6 +56,9 @@ object FormattingUtils {
         return "$chunkedBody\n_ _"
     }
 
+    /**
+     * Gets the timestamp with date time formatting for the log
+     */
     @JvmStatic
     private fun getTimestamp(timeZoneFormat: ZoneOffset) : String {
         return DateTimeFormatter

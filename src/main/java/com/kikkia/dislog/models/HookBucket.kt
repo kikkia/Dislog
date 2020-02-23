@@ -9,16 +9,26 @@ import com.kikkia.dislog.utils.Constants
 import com.kikkia.dislog.utils.FormattingUtils
 import java.util.*
 
+/**
+ * Class that handles the queue and sending for each webhook url supplied.
+ */
 class HookBucket(private val hookLink: String, private val client: DislogClient) : Thread() {
     private val queue : LinkedList<Log> = LinkedList()
     var remainingRateLimit = 0 // Remaining # of requests we can send before we get ratelimited
     private var rateLimitReset = 0L // Rate limit reset from discord
     var currentLogTries = 0
 
+    /**
+     * Queues a log for sending to the webhook
+     * @param log The log to send
+     */
     fun queueLog(log: Log) {
         queue.add(log)
     }
 
+    /**
+     * Main logic loop that checks the queue for logs and sends them in the case of any new ones
+     */
     override fun run() {
         // Keep polling for when we can send a log
         while (true) {
@@ -42,6 +52,9 @@ class HookBucket(private val hookLink: String, private val client: DislogClient)
         }
     }
 
+    /**
+     * Helper function that pulls the newest log from the queue and then sends it.
+     */
     private fun sendLog() {
         val log = queue.peek()
         try {
