@@ -22,7 +22,7 @@ class HookBucket(private val hookLink: String, private val client: DislogClient)
     override fun run() {
         // Keep polling for when we can send a log
         while (true) {
-            val canSend = (remainingRateLimit > 0 || rateLimitReset < ((System.currentTimeMillis() / 1000) + 1))
+            val canSend = (remainingRateLimit > 0 || rateLimitReset < (System.currentTimeMillis() / 1000))
             if (canSend) {
                 if (queue.size > 0) {
                     if (currentLogTries < client.maxRetries)
@@ -79,7 +79,7 @@ class HookBucket(private val hookLink: String, private val client: DislogClient)
                         // We are being ratelimited so add a couple more seconds to add another second
                         rateLimitReset += 1
                     }
-                    
+
                     return
                 }
 
