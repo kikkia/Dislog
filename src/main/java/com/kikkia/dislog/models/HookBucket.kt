@@ -22,7 +22,7 @@ class HookBucket(private val hookLink: String, private val client: DislogClient)
     override fun run() {
         // Keep polling for when we can send a log
         while (true) {
-            val canSend = (remainingRateLimit > 0 || rateLimitReset < (System.currentTimeMillis() / 1000))
+            val canSend = (remainingRateLimit > 0 || rateLimitReset < (System.currentTimeMillis() / 1000) - 1)
             if (canSend) {
                 if (queue.size > 0) {
                     if (currentLogTries < client.maxRetries)
@@ -36,7 +36,7 @@ class HookBucket(private val hookLink: String, private val client: DislogClient)
                 }
             } else {
                 // Equation looks weird to keep integer division in check with check above
-                sleep((rateLimitReset - (System.currentTimeMillis() / 1000)) * 1000) // Sleep till the rate limit is reset
+                sleep((rateLimitReset + 2 - (System.currentTimeMillis() / 1000)) * 1000) // Sleep till the rate limit is reset
             }
         }
     }
@@ -72,7 +72,7 @@ class HookBucket(private val hookLink: String, private val client: DislogClient)
                                 .value
                                 .toLong()
 
-                println("Remaining rate limit: ${remainingRateLimit} Ratelimit reset: ${rateLimitReset}")
+                println("Remaining rate limit: ${remainingRateLimit} Ratelimit reset: ${rateLimitReset} now ${System.currentTimeMillis()}")
 
                 if (response.statusLine.statusCode < 200 || response.statusLine.statusCode >= 300) {
                     println("Post to ${log.level} webhook failed with code: " + response.statusLine.statusCode)
