@@ -1,5 +1,5 @@
 package models
 
 enum class LogLevel {
-    DEBUG, INFO, WARN, ERROR
+    DEBUG, INFO, WARN, ERROR, FATAL, TRACE
 }
