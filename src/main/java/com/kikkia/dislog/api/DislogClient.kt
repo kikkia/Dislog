@@ -78,9 +78,10 @@ class DislogClient private constructor(builder: DislogClient.Builder){
             return this
         }
 
-        fun addWebhook(level: LogLevel, webhookUrl: String) {
+        fun addWebhook(level: LogLevel, webhookUrl: String) : Builder {
             urlMap.computeIfPresent(level) { _, v -> v.plus(webhookUrl).toMutableList()}
             urlMap.computeIfAbsent(level) { mutableListOf(webhookUrl)}
+            return this
         }
 
         fun setMaxRetries(retries: Int) : Builder {
