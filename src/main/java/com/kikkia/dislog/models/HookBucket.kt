@@ -30,6 +30,7 @@ class HookBucket(private val hookLink: String, private val client: DislogClient)
                     else {
                         // Drop log that keeps failing to send
                         queue.poll()
+                        currentLogTries = 0
                     }
                 } else {
                    sleep(client.threadPollRate) // No logs present so sleep and wait for more
@@ -80,6 +81,7 @@ class HookBucket(private val hookLink: String, private val client: DislogClient)
 
                     if (response.statusLine.statusCode == 429) {
                         // We are being ratelimited so add a couple more seconds to add another second
+                        remainingRateLimit = 0
                         rateLimitReset += 1
                     }
 
