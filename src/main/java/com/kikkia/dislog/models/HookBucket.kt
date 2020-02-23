@@ -1,12 +1,12 @@
-package models
+package com.kikkia.dislog.models
 
-import api.DislogClient
+import com.kikkia.dislog.api.DislogClient
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.HttpClients
 import org.json.JSONObject
-import utils.Constants
-import utils.FormattingUtils
+import com.kikkia.dislog.utils.Constants
+import com.kikkia.dislog.utils.FormattingUtils
 import java.util.*
 
 class HookBucket(private val hookLink: String, private val client: DislogClient) : Thread() {

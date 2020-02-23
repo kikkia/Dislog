@@ -1,4 +1,4 @@
-package utils
+package com.kikkia.dislog.utils
 
 object Constants {
     @JvmStatic

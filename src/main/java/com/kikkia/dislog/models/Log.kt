@@ -1,4 +1,4 @@
-package models
+package com.kikkia.dislog.models
 
 import org.slf4j.MDC
 import java.lang.Exception

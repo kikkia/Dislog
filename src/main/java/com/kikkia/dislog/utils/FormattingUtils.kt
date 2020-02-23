@@ -1,6 +1,6 @@
-package utils
+package com.kikkia.dislog.utils
 
-import models.Log
+import com.kikkia.dislog.models.Log
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.time.Instant

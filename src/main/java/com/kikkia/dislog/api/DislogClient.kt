@@ -1,9 +1,9 @@
-package api
+package com.kikkia.dislog.api
 
-import models.HookBucket
-import models.Log
-import models.LogLevel
-import utils.Constants
+import com.kikkia.dislog.models.HookBucket
+import com.kikkia.dislog.models.Log
+import com.kikkia.dislog.models.LogLevel
+import com.kikkia.dislog.utils.Constants
 import java.time.ZoneOffset
 import java.util.stream.Collectors
 
