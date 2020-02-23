@@ -25,14 +25,14 @@ class HookBucket(private val hookLink: String, private val client: DislogClient)
             val canSend = (remainingRateLimit > 0 || rateLimitReset < System.currentTimeMillis())
             if (canSend) {
                 if (queue.size > 0) {
-                    if (currentLogTries < Constants.MAX_LOG_RETRIES)
+                    if (currentLogTries < client.maxRetries)
                         sendLog()
                     else {
                         // Drop log that keeps failing to send
                         queue.poll()
                     }
                 } else {
-                   sleep(100) // No logs present so sleep and wait for more
+                   sleep(client.threadPollRate) // No logs present so sleep and wait for more
                 }
             } else {
                 sleep(rateLimitReset - System.currentTimeMillis()) // Sleep till the rate limit is reset

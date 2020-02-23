@@ -3,6 +3,7 @@ package api
 import models.HookBucket
 import models.Log
 import models.LogLevel
+import utils.Constants
 import java.time.ZoneOffset
 import java.util.stream.Collectors
 
@@ -14,6 +15,8 @@ class DislogClient private constructor(builder: DislogClient.Builder){
     val hostIdentifier: String
     var printStackTrace: Boolean = false
     var timeZoneFormat: ZoneOffset = ZoneOffset.UTC
+    var maxRetries: Int = Constants.MAX_LOG_RETRIES
+    var threadPollRate: Long
 
     init {
         this.name = builder.name
@@ -21,6 +24,8 @@ class DislogClient private constructor(builder: DislogClient.Builder){
         this.hostIdentifier = builder.hostIdentifier
         this.printStackTrace = builder.printStackTrace
         this.timeZoneFormat = builder.zoneFormat
+        this.maxRetries = builder.maxRetries
+        this.threadPollRate = builder.pollRate
 
         // Translate Urls to buckets
         for ((key, value) in builder.urlMap) {
@@ -44,12 +49,14 @@ class DislogClient private constructor(builder: DislogClient.Builder){
     }
 
     class Builder {
-        val urlMap: HashMap<LogLevel, List<String>> = HashMap()
+        val urlMap: HashMap<LogLevel, MutableList<String>> = HashMap()
         var name = "dislog"
         var avatarUrl = "https://i.imgur.com/SmqNOwu.jpg"
         var hostIdentifier: String = "dislog"
         var printStackTrace: Boolean = false
         var zoneFormat = ZoneOffset.UTC
+        var maxRetries: Int = Constants.MAX_LOG_RETRIES
+        var pollRate: Long = Constants.POLL_RATE
 
         fun setUsername(name: String) : Builder {
             this.name = name
@@ -72,7 +79,18 @@ class DislogClient private constructor(builder: DislogClient.Builder){
         }
 
         fun addWebhook(level: LogLevel, webhookUrl: String) {
-            urlMap.computeIfPresent(level, { })
+            urlMap.computeIfPresent(level) { _, v -> v.plus(webhookUrl).toMutableList()}
+            urlMap.computeIfAbsent(level) { mutableListOf(webhookUrl)}
+        }
+
+        fun setMaxRetries(retries: Int) : Builder {
+            this.maxRetries = retries
+            return this
+        }
+
+        fun setPollRate(milliRate: Long) : Builder {
+            this.pollRate = milliRate
+            return this
         }
 
         fun setTimeZone(zone: ZoneOffset) : Builder {
