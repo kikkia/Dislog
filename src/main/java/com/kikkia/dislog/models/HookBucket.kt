@@ -70,7 +70,9 @@ class HookBucket(private val hookLink: String, private val client: DislogClient)
                 rateLimitReset = response.getFirstHeader(
                                 Constants.RATE_LIMIT_RESET_TIME)
                                 .value
-                                .toLong() // Get in seconds, convert to millis
+                                .toLong()
+
+                println("Remaining rate limit: ${remainingRateLimit} Ratelimit reset: ${rateLimitReset}")
 
                 if (response.statusLine.statusCode < 200 || response.statusLine.statusCode >= 300) {
                     println("Post to ${log.level} webhook failed with code: " + response.statusLine.statusCode)
