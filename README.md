@@ -20,7 +20,7 @@ Then you can add the Dislog dependancy to your `pom.xml` as well
 <dependency>
   <groupId>com.github.kikkia</groupId>
   <artifactId>Dislog</artifactId>
-  <version>1.0.0</version>
+  <version>2.0.0</version>
 </dependency>
 ```
 
@@ -38,30 +38,19 @@ Add the jitpack repostiory to your `build.gradle` file
 Then you can add the repository
 ```gradle
 dependencies {
-	        implementation 'com.github.kikkia:Dislog:1.0.0'
+	        implementation 'com.github.kikkia:Dislog:2.0.0'
 	}
 ```
 
-To use Dislog you need to build a DislogClient builder like so
+To use Dislog you can to build a DislogClient builder like so
 ```java
     DislogClient client = new DislogClient.Builder()
-                .setDebugWebhookUrl("Debug webhook url")
-                .setInfoWebhookUrl("Info webhook url")
-                .setWarnWebhookUrl("Warning webhook url")
-                .setErrorWebhookUrl("Error webhook url")
+                .addWebhook(LogLevel.DEBUG, "Debug webhook url")
                 .build();
 ```
-The only things you need to set on the client are the webhook urls for the levels you want to log out to discord.
+The only things you need to set on the client are the webhook urls for the levels you want to log out to discord. You can add as many  webhook urls per log level as you want. Supported log levels are `DEBUG, INFO, WARN, ERROR, FATAL, TRACE`
 
 To send a log you need to construct a Log object. A log contains 3 things, a message, a level and an optional Exception.  
-
-### Levels
-There are 4 LogLevels:
-- Error - Represents a fatal error
-- Warning - Represents something that may not have been of error severity but needs attention
-- Info - Informational logs
-- Debug - Logs for the purpose of debugging.   
-Logs are sent to a channel based on their level. You can give each their own channel or send them all to one channel, thats up to you. 
 
 ### Settings
 There are various settings you can setup when building your Dislog client, they are:
@@ -71,6 +60,8 @@ There are various settings you can setup when building your Dislog client, they 
 - Avatar Url - The url for the Dislog webhook.
 - Print Stack Trace - A boolean that enables/disables printing the stack trace with the log when there is an Exception present. 
 - TimeZone - set the timezone to standardize the timestamps on each log.
+- Max Retries - set how many times to retry sending a log before throwing it out. (Default = 5)
+- Poll rate - Each webhook has a thread that polls a log queue, this is the period of which it will poll at. (Default = 100ms)
 
 ### MDC
 Each log is printed with the contents of the MDC when the log is sent. The MDC is a powerful tool to manage values you want to send with logs. [Quick guide on how to use the MDC](https://www.baeldung.com/mdc-in-log4j-2-logback)
