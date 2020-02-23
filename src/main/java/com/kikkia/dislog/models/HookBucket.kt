@@ -35,7 +35,8 @@ class HookBucket(private val hookLink: String, private val client: DislogClient)
                    sleep(client.threadPollRate) // No logs present so sleep and wait for more
                 }
             } else {
-                sleep(rateLimitReset - System.currentTimeMillis()) // Sleep till the rate limit is reset
+                // Equation looks weird to keep integer division in check with check above
+                sleep((rateLimitReset - (System.currentTimeMillis() / 1000)) * 1000) // Sleep till the rate limit is reset
             }
         }
     }
