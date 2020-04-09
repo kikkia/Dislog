@@ -22,16 +22,16 @@ class DislogClient private constructor(builder: DislogClient.Builder){
     var threadPollRate: Long
 
     init {
-        this.name = builder.name
-        this.avatarUrl = builder.avatarUrl
-        this.hostIdentifier = builder.hostIdentifier
-        this.printStackTrace = builder.printStackTrace
-        this.timeZoneFormat = builder.zoneFormat
-        this.maxRetries = builder.maxRetries
-        this.threadPollRate = builder.pollRate
+        this.name = builder.getUsername()
+        this.avatarUrl = builder.getAvatarUrl()
+        this.hostIdentifier = builder.getIdentifier()
+        this.printStackTrace = builder.isPrintingStackTrace()
+        this.timeZoneFormat = builder.getTimeZone()
+        this.maxRetries = builder.getMaxRetries()
+        this.threadPollRate = builder.getPollRate()
 
         // Translate Urls to buckets
-        for ((key, value) in builder.urlMap) {
+        for ((key, value) in builder.getWebhooks()) {
             webhookBucketMap[key] = value.stream().map { HookBucket(it, this) }
                     .collect(Collectors.toList())
         }
@@ -58,14 +58,14 @@ class DislogClient private constructor(builder: DislogClient.Builder){
      * Builder class for building dislog clients
      */
     class Builder {
-        val urlMap: HashMap<LogLevel, MutableList<String>> = HashMap()
-        var name = "dislog"
-        var avatarUrl = "https://i.imgur.com/SmqNOwu.jpg"
-        var hostIdentifier: String = "dislog"
-        var printStackTrace: Boolean = false
-        var zoneFormat = ZoneOffset.UTC
-        var maxRetries: Int = Constants.MAX_LOG_RETRIES
-        var pollRate: Long = Constants.POLL_RATE
+        private val urlMap: HashMap<LogLevel, MutableList<String>> = HashMap()
+        private var name = "dislog"
+        private var avatarUrl = "https://i.imgur.com/SmqNOwu.jpg"
+        private var hostIdentifier: String = "dislog"
+        private var printStackTrace: Boolean = false
+        private var zoneFormat = ZoneOffset.UTC
+        private var maxRetries: Int = Constants.MAX_LOG_RETRIES
+        private var pollRate: Long = Constants.POLL_RATE
 
         /**
          * Sets the username for the webhook
@@ -77,6 +77,10 @@ class DislogClient private constructor(builder: DislogClient.Builder){
             return this
         }
 
+        fun getUsername() : String {
+            return name
+        }
+
         /**
          * Sets the avatar url for the webhook
          * @property url the url to the avatar
@@ -84,6 +88,10 @@ class DislogClient private constructor(builder: DislogClient.Builder){
         fun setAvatarUrl(url: String) : Builder {
             this.avatarUrl = url
             return this
+        }
+
+        fun getAvatarUrl() : String {
+            return avatarUrl
         }
 
 
@@ -97,6 +105,10 @@ class DislogClient private constructor(builder: DislogClient.Builder){
             return this
         }
 
+        fun getIdentifier() : String {
+            return hostIdentifier
+        }
+
 
         /**
          * Sets whether or not stack trace should be printed for error logs
@@ -106,6 +118,10 @@ class DislogClient private constructor(builder: DislogClient.Builder){
         fun printStackTrace(print: Boolean) : Builder {
             this.printStackTrace = print
             return this
+        }
+
+        fun isPrintingStackTrace() : Boolean {
+            return printStackTrace
         }
 
 
@@ -121,6 +137,10 @@ class DislogClient private constructor(builder: DislogClient.Builder){
             return this
         }
 
+        fun getWebhooks() : Map<LogLevel, List<String>> {
+            return urlMap
+        }
+
 
         /**
          * Sets the number of retries for the webhook
@@ -132,6 +152,9 @@ class DislogClient private constructor(builder: DislogClient.Builder){
             return this
         }
 
+        fun getMaxRetries() : Int {
+            return maxRetries
+        }
 
         /**
          * Sets the pollrate for the webhook thread
@@ -143,6 +166,9 @@ class DislogClient private constructor(builder: DislogClient.Builder){
             return this
         }
 
+        fun getPollRate() : Long {
+            return pollRate
+        }
 
         /**
          * Sets the timezone for the webhook
@@ -154,6 +180,9 @@ class DislogClient private constructor(builder: DislogClient.Builder){
             return this
         }
 
+        fun getTimeZone() : ZoneOffset {
+            return zoneFormat
+        }
 
         /**
          * Builds a new dislog client from the builder
