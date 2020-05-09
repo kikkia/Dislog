@@ -42,6 +42,8 @@ dependencies {
 	}
 ```
 
+## Usage
+
 To use Dislog you can to build a DislogClient builder like so
 ```java
     DislogClient client = new DislogClient.Builder()
@@ -50,7 +52,10 @@ To use Dislog you can to build a DislogClient builder like so
 ```
 The only things you need to set on the client are the webhook urls for the levels you want to log out to discord. You can add as many  webhook urls per log level as you want. Supported log levels are `DEBUG, INFO, WARN, ERROR, FATAL, TRACE`
 
-To send a log you need to construct a Log object. A log contains 3 things, a message, a level and an optional Exception.  
+To send a log you need to construct a Log object. A log contains 3 things, a message, a level and an optional Exception.
+
+#### NOTE:
+Currently each dislogClient that is created will spawn 1 thread per webhook. Make sure to only make 1 dislog client that is shared between all of your loggers. In the future I will impliment 1 thread per webhook, independant of the number of dislog clients.
 
 ### Settings
 There are various settings you can setup when building your Dislog client, they are:
