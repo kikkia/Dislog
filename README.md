@@ -55,7 +55,7 @@ The only things you need to set on the client are the webhook urls for the level
 To send a log you need to construct a Log object. A log contains 3 things, a message, a level and an optional Exception.
 
 #### NOTE:
-Currently each dislogClient that is created will spawn 1 thread per webhook. Make sure to only make 1 dislog client that is shared between all of your loggers. In the future I will impliment 1 thread per webhook, independant of the number of dislog clients.
+Currently each dislogClient that is created will spawn 1 thread per webhook. Make sure to only make 1 dislog client that is shared between all of your loggers. Spawning more, especially dynamically, can lead to thread leaks. In the future I will impliment 1 thread per webhook, independant of the number of dislog clients.
 
 ### Settings
 There are various settings you can setup when building your Dislog client, they are:
