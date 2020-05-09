@@ -57,7 +57,7 @@ To send a log you need to construct a Log object. A log contains 3 things, a mes
 #### NOTE:
 Currently each dislogClient that is created will spawn 1 thread per webhook. Make sure to only make 1 dislog client that is shared between all of your loggers. Spawning more, especially dynamically, can lead to thread leaks. In the future I will impliment 1 thread per webhook, independant of the number of dislog clients.
 
-### Settings
+## Settings
 There are various settings you can setup when building your Dislog client, they are:
 
 - Name - The username that the webhook displays in discord.
@@ -68,5 +68,5 @@ There are various settings you can setup when building your Dislog client, they 
 - Max Retries - set how many times to retry sending a log before throwing it out. (Default = 5)
 - Poll rate - Each webhook has a thread that polls a log queue, this is the period of which it will poll at. (Default = 100ms)
 
-### MDC
+## MDC
 Each log is printed with the contents of the MDC when the log is sent. The MDC is a powerful tool to manage values you want to send with logs. [Quick guide on how to use the MDC](https://www.baeldung.com/mdc-in-log4j-2-logback)
