@@ -12,7 +12,7 @@ import java.util.stream.Collectors
  */
 class DislogClient private constructor(builder: DislogClient.Builder){
 
-    val webhookBucketMap: HashMap<LogLevel, List<HookBucket>> = HashMap()
+    private val webhookBucketMap: HashMap<LogLevel, List<HookBucket>> = HashMap()
     val name: String
     val avatarUrl: String
     val hostIdentifier: String
@@ -37,7 +37,7 @@ class DislogClient private constructor(builder: DislogClient.Builder){
         }
 
         // Start all bucket threads
-        for ((key, value) in webhookBucketMap) {
+        for ((_, value) in webhookBucketMap) {
             for (bucket in value) {
                 bucket.start()
             }
