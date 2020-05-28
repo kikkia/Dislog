@@ -14,9 +14,9 @@ import java.util.*
  */
 class HookBucket(private val hookLink: String, private val client: DislogClient) : Thread() {
     private val queue : LinkedList<Log> = LinkedList()
-    var remainingRateLimit = 0 // Remaining # of requests we can send before we get ratelimited
+    private var remainingRateLimit = 0 // Remaining # of requests we can send before we get ratelimited
     private var rateLimitReset = 0L // Rate limit reset from discord
-    var currentLogTries = 0
+    private var currentLogTries = 0
 
     /**
      * Queues a log for sending to the webhook
@@ -32,22 +32,27 @@ class HookBucket(private val hookLink: String, private val client: DislogClient)
     override fun run() {
         // Keep polling for when we can send a log
         while (true) {
-            val canSend = (remainingRateLimit > 0 || rateLimitReset < (System.currentTimeMillis() / 1000) - 1)
-            if (canSend) {
-                if (queue.size > 0) {
-                    if (currentLogTries < client.maxRetries)
-                        sendLog()
-                    else {
-                        // Drop log that keeps failing to send
-                        queue.poll()
-                        currentLogTries = 0
+            try {
+                val canSend = (remainingRateLimit > 0 || rateLimitReset < (System.currentTimeMillis() / 1000) - 1)
+                if (canSend) {
+                    if (queue.size > 0) {
+                        if (currentLogTries < client.maxRetries)
+                            sendLog()
+                        else {
+                            // Drop log that keeps failing to send
+                            queue.poll()
+                            currentLogTries = 0
+                        }
+                    } else {
+                       sleep(client.threadPollRate) // No logs present so sleep and wait for more
                     }
                 } else {
-                   sleep(client.threadPollRate) // No logs present so sleep and wait for more
+                    // Equation looks weird to keep integer division in check with check above
+                    sleep((rateLimitReset + 2 - (System.currentTimeMillis() / 1000)) * 1000) // Sleep till the rate limit is reset
                 }
-            } else {
-                // Equation looks weird to keep integer division in check with check above
-                sleep((rateLimitReset + 2 - (System.currentTimeMillis() / 1000)) * 1000) // Sleep till the rate limit is reset
+            } catch (e: Exception) {
+                print("DISLOG ERROR: ${e.message}")
+                sleep(client.threadPollRate)
             }
         }
     }
@@ -68,9 +73,9 @@ class HookBucket(private val hookLink: String, private val client: DislogClient)
                         this.client.printStackTrace,
                         this.client.hostIdentifier,
                         this.client.timeZoneFormat))
-                val entity : StringEntity = StringEntity(jsonObject.toString())
+                val entity = StringEntity(jsonObject.toString())
 
-                val post : HttpPost = HttpPost(url)
+                val post = HttpPost(url)
                 post.addHeader("Content-type", "application/json")
                 post.entity = (entity)
                 val response = client.execute(post)
