@@ -51,7 +51,7 @@ class HookBucket(private val hookLink: String, private val client: DislogClient)
                     sleep((rateLimitReset + 2 - (System.currentTimeMillis() / 1000)) * 1000) // Sleep till the rate limit is reset
                 }
             } catch (e: Exception) {
-                print("DISLOG ERROR: ${e.message}")
+                print("DISLOG ERROR: $e")
                 sleep(client.threadPollRate)
             }
         }
