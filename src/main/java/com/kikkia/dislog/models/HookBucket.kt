@@ -52,6 +52,7 @@ class HookBucket(private val hookLink: String, private val client: DislogClient)
                 }
             } catch (e: Exception) {
                 print("DISLOG ERROR: $e")
+                e.printStackTrace()
                 sleep(client.threadPollRate)
             }
         }
