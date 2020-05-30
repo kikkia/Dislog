@@ -40,7 +40,8 @@ class HookBucket(private val hookLink: String, private val client: DislogClient)
                             sendLog()
                         else {
                             // Drop log that keeps failing to send
-                            queue.poll()
+                            val log = queue.poll()
+                            print("Dislog ERROR: Log failed to send to discord - $log")
                             currentLogTries = 0
                         }
                     } else {
@@ -62,7 +63,7 @@ class HookBucket(private val hookLink: String, private val client: DislogClient)
      * Helper function that pulls the newest log from the queue and then sends it.
      */
     private fun sendLog() {
-        val log = queue.peek()
+        val log = queue.peek() ?: return
         try {
             HttpClients.createDefault().use { client ->
                 val url = hookLink
