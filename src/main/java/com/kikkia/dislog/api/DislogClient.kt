@@ -10,7 +10,7 @@ import java.util.stream.Collectors
 /**
  * Dislog client to use for sending logs to discord webhooks
  */
-class DislogClient private constructor(builder: DislogClient.Builder){
+class DislogClient private constructor(builder: Builder){
 
     private val webhookBucketMap: HashMap<LogLevel, List<HookBucket>> = HashMap()
     val name: String
